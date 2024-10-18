@@ -1,24 +1,79 @@
 # CustomFormGenerator
 
-TODO: Delete this and the text below, and describe your gem
+## Overview
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/custom_form_generator`. To experiment with that code, run `bin/console` for an interactive prompt.
+CustomFormGenerator is a Ruby gem designed to dynamically generate HTML forms and tables based on JSON configurations. It leverages the Slim templating engine to render forms, filter, sort options, and tabular views.
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add this line to your application's Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
+    gem 'custom_form_generator', path: '/path/to/custom_form_generator'
+And then execute:
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+    bundle install
 
 ## Usage
 
-TODO: Write usage instructions here
+### Preparation
+
+To use CustomFormGenerator, you need to provide few JSON files that defines the structure of your form or table. Currently supporting use cases of 3 such files:
+- form.json
+- data.json
+- config.json
+
+#### form.json
+```
+[
+  { "type": "textfield", "label": "Name", "key": "name" },
+  { "type": "dropdown", "label": "Gender", "key": "gender" }
+]
+
+```
+
+#### data.json
+```
+{
+  "name": "John Doe",
+  "gender": ["Male", "Female", "Other"]
+}
+```
+
+#### config.json
+```
+{
+  "sort": [{"key": "name", "label": "Name"}, {"key": "date", "label": "Date"}],
+  "filter": [{"key": "active", "label": "Active"}]
+}
+```
+
+### Generating form
+Use the generate_form method to generate HTML form based on the provided JSON configuration files.
+```
+require 'custom_form_generator'
+
+form_json = 'path/to/form.json'
+data_json = 'path/to/data.json'
+config_json = 'path/to/config.json'
+
+generator = CustomFormGenerator::Generator.new(form_json, data_json, config_json)
+html_form = generator.generate_form
+puts html_form
+```
+### Generating filer and sort
+Use generate_filter_sort method to generate HTML form based on the provided JSON configuration files.
+```
+filter_html = generator.generate_filter_and_sort
+puts filter_html
+```
+
+### Generating table
+Use generate_tabular_view(data) method to generate HTML table based on the provided JSON configuration files.
+```
+data = [{ "name": "John Doe", "gender": "Male" }]
+table_html = generator.generate_tabular_view(data)
+puts table_html
+```
 
 ## Development
 
@@ -28,7 +83,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/custom_form_generator. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/custom_form_generator/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/Manmohan-menon/SlimForms_gem. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/Manmohan-menon/SlimForms_gem/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -36,4 +91,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the CustomFormGenerator project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/custom_form_generator/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the CustomFormGenerator project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/Manmohan-menon/SlimForms_gem/CODE_OF_CONDUCT.md).
