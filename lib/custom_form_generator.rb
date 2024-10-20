@@ -88,13 +88,17 @@ module CustomFormGenerator
       <<-SLIM
         table
           tr
+            th Select
             - @table_fields_yaml.each do |field|
               th id='#{field['id']}' class='#{field['class']}'= field['label']
           - data.each do |entry|
             tr
+              td
+                input type='checkbox' class='select-row'
               - @table_fields_yaml.each do |field|
                 td id='#{field['id']}' class='#{field['class']}'= entry.dig(*field['key'].split('.'))
+        button id='edit-button' style='display:none;' Edit
       SLIM
-    end
+    end    
   end
 end
