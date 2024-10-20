@@ -35,6 +35,7 @@ module CustomFormGenerator
       <<-SLIM
         form
           - @form_yaml.each do |field|
+            - next if field['key'] == '_id'
             == render_field(field)
             br
       SLIM
@@ -66,8 +67,12 @@ module CustomFormGenerator
 
     def fetch_nested_value(key)
       keys = key.split('.')
-      keys.reduce(@data_json) { |data, k| data[k] }
+      keys.reduce(@data_json) do |data, k|
+        return '' unless data.is_a?(Hash) && data.key?(k)
+        data[k]
+      end
     end
+    
 
     def filter_and_sort_template
       <<-SLIM
