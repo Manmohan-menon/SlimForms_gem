@@ -45,32 +45,38 @@ module CustomFormGenerator
       case field['type']
       when 'textfield'
         "<label for='#{field['id']}'>#{field['label']}</label>
-         <input type='text' id='#{field['id']}' class='#{field['class']}' name='#{field['key']}' value='#{fetch_nested_value(field['key'])}' placeholder='Enter your #{field['key']}'/>"
+        <input type='text' id='#{field['id']}' class='#{field['class']}' name='#{field['key']}' value='#{fetch_nested_value(field['key'])}' placeholder='Enter your #{field['key']}'/>"
       when 'dropdown'
-        options = fetch_nested_value(field['key']).map { |opt| "<option value='#{opt}'>#{opt}</option>" }.join("\n")
+        value = fetch_nested_value(field['key'])
+        options = value.is_a?(Array) ? value.map { |opt| "<option value='#{opt}'>#{opt}</option>" }.join("\n") : ''
         "<label for='#{field['id']}'>#{field['label']}</label>
-         <select id='#{field['id']}' class='#{field['class']}' name='#{field['key']}'>\n#{options}\n</select>"
+        <select id='#{field['id']}' class='#{field['class']}' name='#{field['key']}'>\n#{options}\n</select>"
       when 'datetime-local'
         disabled_attr = field['disabled'] ? 'disabled' : ''
         "<label for='#{field['id']}'>#{field['label']}</label>
-         <input type='datetime-local' id='#{field['id']}' class='#{field['class']}' name='#{field['key']}' value='#{fetch_nested_value(field['key'])}' #{disabled_attr} />"
+        <input type='datetime-local' id='#{field['id']}' class='#{field['class']}' name='#{field['key']}' value='#{fetch_nested_value(field['key'])}' #{disabled_attr} />"
       when 'radio'
         options = field['options'].map { |opt| "<input type='radio' id='#{field['id']}_#{opt['value']}' class='#{field['class']}' name='#{field['key']}' value='#{opt['value']}'><label for='#{field['id']}_#{opt['value']}'>#{opt['label']}</label>" }.join("<br>")
         "<fieldset>
-           <legend>#{field['label']}</legend>
-           #{options}
-         </fieldset>"
+          <legend>#{field['label']}</legend>
+          #{options}
+        </fieldset>"
+      when 'textbox'
+        "<label for='#{field['id']}'>#{field['label']}</label>
+        <textarea id='#{field['id']}' class='#{field['class']}' name='#{field['key']}' placeholder='Enter your #{field['key']}'></textarea>"
       else
         ''
       end
     end
-
+    
     def fetch_nested_value(key)
       keys = key.split('.')
-      keys.reduce(@data_json) do |data, k|
+      value = keys.reduce(@data_json) do |data, k|
         return '' unless data.is_a?(Hash) && data.key?(k)
         data[k]
       end
+      puts "DEBUG: key = #{key}, value = #{value.inspect}"
+      value
     end
     
 
