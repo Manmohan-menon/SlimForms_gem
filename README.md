@@ -17,18 +17,24 @@ And then execute:
 
 ### Preparation
 
-To use CustomFormGenerator, you need to provide few JSON files that defines the structure of your form or table. Currently supporting use cases of 3 such files:
-- form.json
+To use CustomFormGenerator, you need to provide few JSON and YAML files that defines the structure of your form or table. Currently supporting use cases of 4 such files:
+- form.yml
 - data.json
 - config.json
+- table.yml
 
-#### form.json
+#### form.yml
 ```
-[
-  { "type": "textfield", "label": "Name", "key": "name" },
-  { "type": "dropdown", "label": "Gender", "key": "gender" }
-]
-
+- type: textfield
+  label: Name
+  key: properties.name
+  id: name_input
+  class: form-control
+- type: dropdown
+  label: Gender
+  key: properties.gender
+  id: gender_select
+  class: form-select
 ```
 
 #### data.json
@@ -47,14 +53,31 @@ To use CustomFormGenerator, you need to provide few JSON files that defines the 
 }
 ```
 
-### Generating form
-Use the generate_form method to generate HTML form based on the provided JSON configuration files.
+#### table.yml
+```
+- key: properties.name
+  label: Name
+  id: name_column
+  class: table-column
+- key: properties.sku
+  label: SKU
+  id: sku_column
+  class: table-column
+- key: properties.model
+  label: Model
+  id: model_column
+  class: table-column
+```
+
+### Generating Edit form
+Use the generate_form method to generate HTML form based on the provided JSON/Yaml configuration files.
 ```
 require 'custom_form_generator'
 
-form_json = 'path/to/form.json'
+form_yml = 'path/to/form.yml'
 data_json = 'path/to/data.json'
 config_json = 'path/to/config.json'
+table_yml = 'path/to/table.yml'
 
 generator = CustomFormGenerator::Generator.new(form_json, data_json, config_json)
 html_form = generator.generate_form
@@ -68,7 +91,7 @@ puts filter_html
 ```
 
 ### Generating table
-Use generate_tabular_view(data) method to generate HTML table based on the provided JSON configuration files.
+Use generate_tabular_view(data) method to generate HTML table based on the provided Table yaml file.
 ```
 data = [{ "name": "John Doe", "gender": "Male" }]
 table_html = generator.generate_tabular_view(data)

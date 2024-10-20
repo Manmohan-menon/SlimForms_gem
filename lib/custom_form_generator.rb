@@ -3,14 +3,16 @@
 require_relative "custom_form_generator/version"
 require 'json'
 require 'slim'
+require 'yaml'
 
 module CustomFormGenerator
   class Error < StandardError; end
   class Generator
-    def initialize(form_json, data_json, config_json)
-      @form_json = JSON.parse(File.read(form_json))
+    def initialize(form_yaml, data_json, config_json, table_yaml)
+      @form_yaml = YAML.load_file(form_yaml)
       @data_json = JSON.parse(File.read(data_json))
       @config_json = JSON.parse(File.read(config_json))
+      @table_yaml = YAML.load_file(table_yaml)
     end
 
     def generate_form
@@ -31,50 +33,67 @@ module CustomFormGenerator
 
     def form_template
       <<-SLIM
-form
-  - @form_json.each do |field|
-    == render_field(field)
-    br
+        form
+          - @form_yaml.each do |field|
+            == render_field(field)
+            br
       SLIM
     end
 
     def render_field(field)
       case field['type']
       when 'textfield'
-        "<label>#{field['label']}</label><input type='text' name='#{field['key']}' value='#{@data_json[field['key']]}' placeholder='Enter your #{field['key']}'/>"
+        "<label for='#{field['id']}'>#{field['label']}</label>
+         <input type='text' id='#{field['id']}' class='#{field['class']}' name='#{field['key']}' value='#{fetch_nested_value(field['key'])}' placeholder='Enter your #{field['key']}'/>"
       when 'dropdown'
-        options = @data_json[field['key']].map { |opt| "<option value='#{opt}'>#{opt}</option>" }.join("\n")
-        "<label>#{field['label']}</label><select name='#{field['key']}'>\n#{options}\n</select>"
+        options = fetch_nested_value(field['key']).map { |opt| "<option value='#{opt}'>#{opt}</option>" }.join("\n")
+        "<label for='#{field['id']}'>#{field['label']}</label>
+         <select id='#{field['id']}' class='#{field['class']}' name='#{field['key']}'>\n#{options}\n</select>"
+      when 'datetime-local'
+        disabled_attr = field['disabled'] ? 'disabled' : ''
+        "<label for='#{field['id']}'>#{field['label']}</label>
+         <input type='datetime-local' id='#{field['id']}' class='#{field['class']}' name='#{field['key']}' value='#{fetch_nested_value(field['key'])}' #{disabled_attr} />"
+      when 'radio'
+        options = field['options'].map { |opt| "<input type='radio' id='#{field['id']}_#{opt['value']}' class='#{field['class']}' name='#{field['key']}' value='#{opt['value']}'><label for='#{field['id']}_#{opt['value']}'>#{opt['label']}</label>" }.join("<br>")
+        "<fieldset>
+           <legend>#{field['label']}</legend>
+           #{options}
+         </fieldset>"
       else
         ''
       end
     end
 
+    def fetch_nested_value(key)
+      keys = key.split('.')
+      keys.reduce(@data_json) { |data, k| data[k] }
+    end
+
     def filter_and_sort_template
       <<-SLIM
-div
-  button onclick='showFilterPanel()' Filter
-  select name='sort'
-    - @config_json['sort'].each do |sort_option|
-      option value=sort_option['key'] = sort_option['label']
-  div id='filterPanel' style='display:none;'
-    - @config_json['filter'].each do |filter_option|
-      label = filter_option['label']
-      input type='checkbox' name=filter_option['key']
-  button type='submit' Apply
+        div
+          button onclick='showFilterPanel()' Filter
+          select name='sort'
+            - @config_json['sort'].each do |sort_option|
+              option value=sort_option['key'] = sort_option['label']
+          div id='filterPanel' style='display:none;'
+            - @config_json['filter'].each do |filter_option|
+              label = filter_option['label']
+              input type='checkbox' name=filter_option['key']
+          button type='submit' Apply
       SLIM
     end
 
     def table_template
       <<-SLIM
-table
-  tr
-    - @form_json.each do |field|
-      th= field['label']
-  - data.each do |entry|
-    tr
-      - @form_json.each do |field|
-        td= entry[field['key']]
+        table
+          tr
+            - @table_fields_yaml.each do |field|
+              th id='#{field['id']}' class='#{field['class']}'= field['label']
+          - data.each do |entry|
+            tr
+              - @table_fields_yaml.each do |field|
+                td id='#{field['id']}' class='#{field['class']}'= entry.dig(*field['key'].split('.'))
       SLIM
     end
   end
