@@ -81,29 +81,49 @@ module CustomFormGenerator
           select name='sort'
             - @config_json['sort'].each do |sort_option|
               option value=sort_option['key'] = sort_option['label']
+          select name='order_by'
+            - @config_json['order_by'].each do |order_option|
+              option value=order_option['key'] = order_option['label']
           div id='filterPanel' style='display:none;'
             - @config_json['filter'].each do |filter_option|
               label = filter_option['label']
-              input type='checkbox' name=filter_option['key']
+              - if filter_option['type'] == 'radio'
+                fieldset
+                  legend= filter_option['label']
+                  - filter_option['options'].each do |option|
+                    input type='radio' name=filter_option['key'] value=option
+                    label= option.capitalize
+                  - if filter_option['default']
+                    input type='radio' name=filter_option['key'] value=filter_option['default'] checked
+              - else
+                input type='checkbox' name=filter_option['key']
           button type='submit' Apply
       SLIM
     end
+    
 
     def table_template
       <<-SLIM
         table
           tr
-            th Select
             - @table_fields_yaml.each do |field|
               th id='#{field['id']}' class='#{field['class']}'= field['label']
+            th Activities
           - data.each do |entry|
             tr
-              td
-                input type='checkbox' class='select-row'
               - @table_fields_yaml.each do |field|
-                td id='#{field['id']}' class='#{field['class']}'= entry.dig(*field['key'].split('.'))
-        button id='edit-button' style='display:none;' Edit
+                td id='#{field['id']}' class='#{field['class']}'
+                  - value = entry.dig(*field['key'].split('.'))
+                  - if field['key'] == 'properties.published_at' && value.nil?
+                    = "false"
+                  - elsif field['key'] == 'properties.image_url' && value.nil?
+                    img src='/path/to/default_image.jpg' alt='Default Thumbnail'
+                  - else
+                    = value
+              td
+                button class='edit-button' data-id=entry['_id']['$oid'] Edit
+                button class='delete-button' data-id=entry['_id']['$oid'] Delete
       SLIM
-    end    
+    end
   end
 end
