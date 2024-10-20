@@ -133,12 +133,12 @@ module CustomFormGenerator
         table
           tr
             - @table_yaml.each do |field|
-              th id='#{CGI.escapeHTML(field['id'])}' class='#{CGI.escapeHTML(field['class'])}'= field['label']
+              th id='#{CGI.escapeHTML(field["id"])}' class='#{CGI.escapeHTML(field["class"])}' = field['label']
             th Activities
           - data.each do |entry|
             tr
               - @table_yaml.each do |field|
-                td id='#{CGI.escapeHTML(field['id'])}' class='#{CGI.escapeHTML(field['class'])}'
+                td id='#{CGI.escapeHTML(field["id"])}' class='#{CGI.escapeHTML(field["class"])}'
                   - value = entry.dig(*field['key'].split('.'))
                   - if field['key'] == 'properties.published_at' && value.nil?
                     = "false"
@@ -146,9 +146,9 @@ module CustomFormGenerator
                     img src='/path/to/default_image.jpg' alt='Default Thumbnail'
                   - else
                     = value
-              td
-                button class='edit-button' data-id=entry['_id']['$oid'] Edit
-                button class='delete-button' data-id=entry['_id']['$oid'] Delete
+                td
+                  button class='edit-button' data-id=entry['_id']['$oid'] Edit
+                  button class='delete-button' data-id=entry['_id']['$oid'] Delete
       SLIM
     end
   end
