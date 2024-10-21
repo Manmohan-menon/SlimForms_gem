@@ -30,10 +30,7 @@ module CustomFormGenerator
         SLIM
       end
 
-      def generate_updated_config(config_file, data_file)
-        config = load_json(config_file)
-        data = load_json(data_file)
-
+      def generate_updated_config(config, data)
         config['filter'].each do |filter|
           key = filter['key']
           if filter['options'].nil? || filter['options'].empty?
@@ -50,6 +47,7 @@ module CustomFormGenerator
           end
         end
 
+        # Returns updated config
         config
       end
     end

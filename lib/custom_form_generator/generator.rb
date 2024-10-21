@@ -38,31 +38,5 @@ module CustomFormGenerator
       Slim::Template.new { table_template }.render(self)
     end
 
-    private
-
-    def generate_updated_config(config_file, data_file)
-      config = load_json(config_file)
-      data = load_json(data_file)
-    
-      config['filter'].each do |filter|
-        key = filter['key']
-        if filter['options'].nil? || filter['options'].empty?
-          unique_values = data.map do |entry|
-            value = entry[key]
-            value.is_a?(Array) ? value : [value]
-          end.flatten.uniq.compact
-    
-          if filter['type'] == 'radio' && filter['default'].nil?
-            filter['default'] = unique_values.first
-          end
-
-          filter['options'] = unique_values.map { |value| { "value" => value, "label" => value.capitalize } }
-        end
-      end
-    
-      # Returns updated config
-      config
-    end
-
   end
 end
