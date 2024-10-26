@@ -1,0 +1,21 @@
+[
+  {
+    "_id": { "$oid": "64df" },
+    "language": "jp",
+    "name": "Kishimoto S",
+    "sku": "B3743-B001",
+    "item_template_name": "All",
+    "properties": {
+      "name": "Kishimoto S",
+      "categories": ["/Yusuke/Urameshi"],
+      "sku": "B3743-B001",
+      "teta_id": "240",
+      "old_index": "A-S-AB003",
+      "model": "03",
+      "pattern": "43",
+      "updated_at": { "$date": "2024-08-18T13:54:19.503Z" },
+      "created_at": { "$date": "2024-08-18T13:54:19.503Z" }
+    }
+  }
+]
+  

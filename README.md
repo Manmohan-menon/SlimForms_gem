@@ -31,78 +31,86 @@ To use CustomFormGenerator, you need to provide few JSON and YAML files that def
   id: name_input
   class: form-control
 - type: dropdown
-  label: Gender
-  key: properties.gender
-  id: gender_select
+  label: Language
+  key: language
+  id: language_select
   class: form-select
+  disabled: true
 ```
 
 #### data.json
 ```
-{
-  "name": "John Doe",
-  "gender": ["Male", "Female", "Other"]
-}
+[
+  {
+    "_id": { "$oid": "64df" },
+    "language": "jp",
+    "name": "Kishimoto S",
+    "properties": {
+      "name": "Kishimoto S",
+      "categories": ["/Yusuke/Urameshi"],
+      "sku": "B3743-B001"
+    }
+  }
+]
+
 ```
 
 #### config.json
 ```
 {
-  "sort": [{"key": "name", "label": "Name"}, {"key": "date", "label": "Date"}],
-  "filter": [{"key": "active", "label": "Active"}]
+  "sort": [
+    { "key": "name", "label": "Name" },
+    { "key": "created_at", "label": "Created At" }
+  ],
+  "filter": [
+    { "key": "language", "label": "Language" },
+    { "key": "published_at", "label": "Published At", "type": "radio", "options": ["all", "yes", "no"], "default": "all" }
+  ],
+  "order_by": [
+    { "key": "asc", "label": "Ascending" },
+    { "key": "desc", "label": "Descending" }
+  ]
 }
+
 ```
 
 #### table.yml
 ```
+- key: images_url
+  label: Image
+  id: image_column
+  class: table-column
 - key: properties.name
   label: Name
   id: name_column
   class: table-column
-- key: properties.sku
-  label: SKU
-  id: sku_column
-  class: table-column
-- key: properties.model
-  label: Model
-  id: model_column
-  class: table-column
 ```
 
-### Generating Edit form
-Use the generate_form method to generate HTML form based on the provided JSON/Yaml configuration files.
+### Usage Example
+
 ```
 require 'custom_form_generator'
 
-form_yml = 'path/to/form.yml'
-data_json = 'path/to/data.json'
-config_json = 'path/to/config.json'
-table_yml = 'path/to/table.yml'
+generator = CustomFormGenerator::Generator.new(
+  'path/to/form.yml',
+  'path/to/data.json',
+  'path/to/config.json',
+  'path/to/table.yml'
+)
 
-generator = CustomFormGenerator::Generator.new(form_json, data_json, config_json)
+# Generate form
 html_form = generator.generate_form
-puts html_form
-```
-### Generating filer and sort
-Use generate_filter_sort method to generate HTML form based on the provided JSON configuration files.
-```
-filter_html = generator.generate_filter_and_sort
-puts filter_html
-```
 
-### Generating table
-Use generate_tabular_view(data) method to generate HTML table based on the provided Table yaml file.
-```
-data = [{ "name": "John Doe", "gender": "Male" }]
+# Generate filter and sort
+filter_html = generator.generate_filter_and_sort
+
+# Generate table view
 table_html = generator.generate_tabular_view(data)
-puts table_html
 ```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+After checking out the repo, run bin/setup to install dependencies. Then, run rake spec to run the tests.
 
 ## Contributing
 

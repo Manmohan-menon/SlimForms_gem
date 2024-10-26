@@ -1,0 +1,25 @@
+- key: images_url
+  label: Image
+  id: image_column
+  class: table-column
+- key: properties.name
+  label: Name
+  id: name_column
+  class: table-column
+- key: properties.sku
+  label: SKU
+  id: sku_column
+  class: table-column
+- key: published_at
+  label: Published
+  id: published_column
+  class: table-column
+- key: language
+  label: Language
+  id: language_column
+  class: table-column
+- key: updated_at
+  label: Update
+  id: update_column
+  class: table-column
+

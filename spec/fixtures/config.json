@@ -1,0 +1,17 @@
+{
+    "sort": [
+      { "key": "name", "label": "Name" },
+      { "key": "created_at", "label": "Created At" },
+      { "key": "updated_at", "label": "Updated At" }
+    ],
+    "filter": [
+      { "key": "language", "label": "Language" },
+      { "key": "sales_channels", "label": "Sales Channels"},
+      { "key": "published_at", "label": "Published At", "type": "radio", "options": ["all", "yes", "no"], "default": "all" }
+    ],
+    "order_by": [
+      { "key": "asc", "label": "Ascending" },
+      { "key": "desc", "label": "Descending" }
+    ]
+  }
+  
