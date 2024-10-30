@@ -8,10 +8,10 @@ CustomFormGenerator is a Ruby gem designed to dynamically generate HTML forms an
 
 Add this line to your application's Gemfile:
 
-    gem 'custom_form_generator', path: '/path/to/custom_form_generator'
-And then execute:
+    gem  'custom_form_generator'
+or install it directly:
 
-    bundle install
+    gem install custom_form_generator
 
 ## Usage
 
