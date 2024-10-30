@@ -12,3 +12,5 @@ gem "rspec", "~> 3.0"
 gem "rubocop", "~> 1.21"
 
 gem "json", "~> 2.6.0"
+
+gem "rexml", ">= 3.3.9"
