@@ -1,4 +1,4 @@
-# CustomFormGenerator
+# CustomFormGenerator [![Gem Version](https://badge.fury.io/rb/custom_form_generator.svg?icon=si:rubygems)](https://badge.fury.io/rb/custom_form_generator)
 
 ## Overview
 
